@@ -1,35 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Document</title>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>    
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
 </head>
-<body style="text-align:center; font-family: Arial, serif; font-size: 14pt">
-<script type="text/javascript">
-    $(document).ready(function() {
-        var socket = io.connect(url)
-        socket.on('connect', function() {
-            socket.send("User connected !");
-        });
-
-        socket.on('message', function(data){
-            $("#messages").append($('<p>').text(data));
-        });
-
-        $('#sendBtn').on('click', function(){
-            socket.send($('#username').val() + ': ' + $('#message').val());
-            $('#message').val('');
+<body>
+    <!-- 소켓 통신용 스크립트 -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var socket = io.connect("http://ip_address:5000")
+            socket.on('connect', function() {
+                socket.send("User connected !");
+            });
+    
+            socket.on('message', function(data){
+                var html = `
+                <div class="list">
+                    <ul>
+                        <li>
+                            <table cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td class="chat_td">
+                                        <!--Username & Message-->
+                                        <div class="chat_preview">
+                                            <strong>${data.user}</strong> : ${data.message}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </li>
+                    </ul>
+                </div>`;
+                if(data.message != '' && data.user != ''){
+                    $(".search").after($(html));
+                }
+                $('#message').val('');
+            });
+            $('.button').on('click', function(){
+                var name = $('#username').val()
+                var value = $('#message').val()
+                var data = {"user" : name, "message" : value}
+                socket.send(data);
+            })
+            $('#message').keypress(function(e){
+            var code = e.keyCode || e.which;
+            if(code == 13) {
+                var name = $('#username').val()
+                var value = $('#message').val()
+                $('#message').val(value + '');
+                var data = {"user" : name, "message" : value}
+                socket.send(data);
+            }})
         })
-    })
-</script>
-<div id = "messages" style="margin: 0 auto; width:60%; text-align : left; min-height : 300px">
-
-
+    </script>
+<div class="chat_list_wrap">
+    <div class="header">
+        Gle's Chatroom
+    </div>
+    <div class="search">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="text" id="message" placeholder="Message" required>
+        <input type="button" class="button" value="Input Button">
+    </div>
+    <div class="list">
+        <ul>
+            <li>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="chat_td">
+                            <!--Username & Message-->
+                            <div class="user">
+                                Beharbor Team.
+                            </div>
+                            <div class="user">
+                                이름을 입력하고, 메세지를 마음대로 보내봅시다!<br>
+                                동아대학교 컴퓨터&AI공학부에 온걸 환영합니다!
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+        </ul>
+    </div>
 </div>
-<input type="text" id="username" placeholder="Username" required>
-<input type="text" id="message" placeholder="Message" required>
-<button id="sendBtn">Send</button>
 </body>
 </html>

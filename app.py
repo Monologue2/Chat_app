@@ -8,7 +8,7 @@ socketio = SocketIO(app, cors_allowed_origins='*')
 
 @socketio.on('message')
 def handle_message(message):
-    print("Received message : " + message)
+    print("Received message : ", message)
     if message != "User connected !":
         send(message, broadcast = True)
 
