@@ -76,3 +76,7 @@
   .chat_list_wrap .list ul li table td.time_td .time {
     padding-bottom: 4px;
   }
+  #hidden-input {
+    visibility: hidden;
+    pointer-events: none
+  }

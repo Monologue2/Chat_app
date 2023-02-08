@@ -12,7 +12,7 @@
     <!-- 소켓 통신용 스크립트 -->
     <script type="text/javascript">
         $(document).ready(function() {
-            var socket = io.connect("http://ip_address:5000")
+            var socket = io.connect("http://shogle.ga")
             socket.on('connect', function() {
                 socket.send("User connected !");
             });
@@ -38,22 +38,25 @@
                 if(data.message != '' && data.user != ''){
                     $(".search").after($(html));
                 }
-                $('#message').val('');
             });
             $('.button').on('click', function(){
                 var name = $('#username').val()
                 var value = $('#message').val()
                 var data = {"user" : name, "message" : value}
                 socket.send(data);
+                $('#message').val('');
             })
             $('#message').keypress(function(e){
             var code = e.keyCode || e.which;
             if(code == 13) {
-                var name = $('#username').val()
-                var value = $('#message').val()
-                $('#message').val(value + '');
-                var data = {"user" : name, "message" : value}
+                var name = $('#username').val();
+                var value = $('#message').val();
+                $('#message').val('');
+                var data = {"user" : name, "message" : value};
                 socket.send(data);
+                $('#hidden-input').focus();
+                $('#message').focus();
+                $('#message').val('');
             }})
         })
     </script>
