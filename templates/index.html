@@ -12,7 +12,7 @@
     <!-- 소켓 통신용 스크립트 -->
     <script type="text/javascript">
         $(document).ready(function() {
-            var socket = io.connect("http://shogle.ga")
+            var socket = io.connect("https://shogle.ga")
             socket.on('connect', function() {
                 socket.send("User connected !");
             });
